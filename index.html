@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation Example</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    .error {
+        color: red;
+    }
+    body {
+      background: linear-gradient(117.75deg, #0AC8E2 42.94%, #FFFFFF 94.63%);
+      
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <h2>KOSS Task</h2>
+        <form id="myForm" onsubmit="validateForm(event)">
+          <div class="form-group">
+          <label for="name">Name: </label>
+          <input type="text" class="form-control" id="name" name="name" minlength="2" required>
+          <div class="error" id="nameError"></div> 
+        </div>
+        <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+        <div class="error" id="emailError"></div>
+        </div>
+        <div class="form-group">
+        <label for="designation">Designation:</label>
+        <select class="form-control" id="designation" name="designation" required>
+            <option value="">Select</option>
+            <option value="professor">Professor</option>
+            <option value="student">Student</option>
+        </select>
+        <div class="error" id="designationError"></div>
+        </div>
+        <div class="form-group">
+            <label>Gender:</label><br>
+            <div class="gender">
+                <input type="radio" class="gender-input" id="male" name="gender" value="male" required>
+                <label class="form-check-label" for="male">Male</label>
+        </div>
+        <div class="gender">
+            <input type="radio" class="gender-input" id="female" name="gender" value="female" required>
+            <label class="form-check-label" for="female">Female</label>
+        </div>
+        <div class="gender">
+            <input type="radio" class="gender-input" id="others" name="gender" value="others" required>
+            <label class="form-check-label" for="others">Others</label>
+        </div>
+        <div class="error" id="genderError"></div>
+        </div>
+        <div id="professorFields" style="display: none;">
+        <div class="form-group">
+            <label for="employeeId">Employee ID:</label>
+            <input type="text" class="form-control" id="employeeId" name="employeeId" minlength="8" required>
+            <div class="error" id="employeeIdError"></div>
+        </div>
+        <div class="form-group">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" name="department">
+            <div class="error" id="departmentError"></div>
+        </div>
+        </div>
+        <div id="studentFields" style="display: none;">
+        <div class="form-group">
+            <label for="rollNumber">Roll Number:</label>
+            <input type="text" class="form-control" id="rollNumber" name="rollNumber" minlength="8" required>
+            <div class="error" id="rollNumberError"></div>
+        </div>
+        <div class="form-group">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" name="department">
+            <div class="error" id="departmentError"></div>
+        </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submit" onclick="display()">
+          Submit
+        </button>
+        <div id="successBox" style="display: none;">
+          <div class="alert alert-success mt-4" id="successMessage">
+            <P>Success</P>
+          </div>
+        </div>
+      </form>
+      
+    <!-- <div id="successMessage" style="display: none;">
+    <div class="alert alert-success mt-4">Form submitted successfully!</div>
+    </div> -->
+    
+
+    
+    
+    
+    </div>
+
+<script>
+    function validateForm(event) {
+        event.preventDefault();
+        clearErrors();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const designation = document.getElementById('designation').value;
+      const gender = document.querySelector('input[name="gender"]:checked');
+      const employeeId = document.getElementById('employeeId').value;
+      const rollNumber = document.getElementById('rollNumber').value;
+
+      var isValid = 1;
+
+      if (!validateString(name, 2)) {
+        displayError('name', 'Name should be a string with a minimum length of 2 characters.');
+        isValid = 0;
+      }
+
+      if (!validateEmail(email)) {
+        displayError('email', 'Invalid email address.');
+        isValid = 0;
+      }
+
+      if (designation === '') {
+        displayError('designation', 'Please select a designation.');
+        isValid = 0;
+      }
+
+      if (!gender) {
+        displayError('gender', 'Please select a gender.');
+        isValid = 0;
+      }
+
+      if (designation === 'professor') {
+        if (!validateString(employeeId, 8)) {
+          displayError('employeeId', 'Employee ID should be a string with a minimum length of 8 characters.');
+          isValid = 0;
+        }
+        
+        
+      } else if (designation === 'student') {
+        if (!validateString(rollNumber, 8)) {
+          displayError('rollNumber', 'Roll Number should be a string with a minimum length of 8 characters.');
+          isValid = 0;
+        }
+      }
+
+      
+        let show=document.getElementById('submit');
+        show.addEventListener('onclick',function submit(){
+          alert("Fuck");
+        });
+      
+    }
+
+    function validateString(value, minLength) {
+      return value.length >= minLength;
+    }
+
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    function displayError(field, message) {
+      const errorElement = document.getElementById(`${field}Error`);
+      errorElement.innerText = message;
+    }
+
+    function clearErrors() {
+      const errorElements = document.getElementsByClassName('error');
+      for (let i = 0; i < errorElements.length; i++) {
+        errorElements[i].innerText = '';
+      }
+    }
+
+    function showSuccessMessage() {
+      const formElement = document.getElementById('myForm');
+      const successMessage = document.getElementById('successMessage');
+
+      formElement.style.display = 'none';
+      successMessage.style.display = 'block';
+      successMessage.innerHTML="Success";
+    }
+
+    function toggleFields() {
+      const designation = document.getElementById('designation').value;
+      const professorFields = document.getElementById('professorFields');
+      const studentFields = document.getElementById('studentFields');
+
+      professorFields.style.display = (designation === 'professor') ? 'block' : 'none';
+      studentFields.style.display = (designation === 'student') ? 'block' : 'none';
+    }
+
+    const designationSelect = document.getElementById('designation');
+    designationSelect.addEventListener('change', toggleFields);
+
+    function display(){
+      const errorElement = document.getElementById(`${field}Error`);
+      const errorElements = document.getElementsByClassName('error');
+      if (displayError(field, message)==null) {
+      showSuccessMessage();
+      alert(" ajymj ")
+    }
+      
+    }
+    
+  
+  </script>
+</body>
+</html>
